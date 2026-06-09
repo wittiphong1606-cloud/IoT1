@@ -1,0 +1,72 @@
+:root {
+    --primary-teal: #0d9488;
+    --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-main: #1f2937;
+}
+
+body {
+    margin: 0; font-family: 'Inter', sans-serif;
+    background: var(--bg-gradient); color: var(--text-main);
+    min-height: 100vh; padding: 20px;
+}
+
+.container { max-width: 1000px; margin: 0 auto; }
+
+header { text-align: center; margin-bottom: 30px; }
+header h1 { letter-spacing: 2px; color: var(--primary-teal); }
+
+/* Bento Grid System */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg); padding: 25px;
+    border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+    text-align: center; transition: 0.3s;
+}
+.card:hover { transform: translateY(-5px); }
+h3 { font-size: 0.9rem; color: #6b7280; margin-top: 0; text-transform: uppercase; }
+
+/* Switch Style */
+.switch-container {
+    position: relative; display: inline-block; width: 60px; height: 34px;
+}
+.switch-container input { opacity: 0; width: 0; height: 0; }
+.slider-round {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 34px;
+}
+.slider-round:before {
+    position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px;
+    background-color: white; transition: .4s; border-radius: 50%;
+}
+input:checked + .slider-round { background-color: var(--primary-teal); }
+input:checked + .slider-round:before { transform: translateX(26px); }
+
+/* Slider & LED */
+input[type="range"] { width: 100%; accent-color: var(--primary-teal); height: 48px; }
+.led-dot {
+    width: 40px; height: 40px; border-radius: 50%; background: #d1d5db;
+    margin: 15px auto; transition: 0.3s;
+}
+.led-on { background: #10b981; box-shadow: 0 0 15px #10b981; }
+
+/* Gauge Style */
+.gauge-wrapper { position: relative; width: 120px; margin: 0 auto; }
+.gauge-svg { transform: rotate(-90deg); }
+.gauge-bg { fill: none; stroke: #e5e7eb; stroke-width: 8; }
+.gauge-progress {
+    fill: none; stroke: var(--primary-teal); stroke-width: 8;
+    stroke-linecap: round; stroke-dasharray: 283; stroke-dashoffset: 283;
+    transition: stroke-dashoffset 1s ease-out;
+}
+.gauge-inner-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-weight: 600; font-size: 1.2rem;
+}
+
+.label-box { background: #f3f4f6; padding: 15px; border-radius: 12px; font-weight: 600; min-height: 20px;}
