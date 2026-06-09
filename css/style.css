@@ -1,0 +1,679 @@
+:root {
+    /* ใช้โทนสี Teal-Blue ตามงานวิจัยที่ช่วยลดความเมื่อยล้าของสายตา [11, 12] */
+    --primary-gradient: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --error-color: #dc2626; /* สีแดงที่ชัดเจนตามมาตรฐาน WCAG [8, 13] */
+    --text-main: #1f2937;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--primary-gradient); /* เทรนด์สี Bold ในปี 2026 [14] */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+}
+
+/* การออกแบบ Card ที่มีความสมดุลแบบ Asymmetrical [15] */
+.login-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    transition: transform 0.3s ease; /* Micro-animation เพื่อความน่าสนใจ [16] */
+}
+
+h1 {
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #111827;
+}
+
+p.welcome-msg {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 2rem;
+    font-size: 16px; /* ขนาดฟอนต์ขั้นต่ำที่แนะนำเพื่อการอ่านออก [10, 17] */
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 16px; /* ป้องกันการซูมบน iOS และช่วยให้อ่านง่าย [17] */
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2); /* Focus Visibility ตาม WCAG 2.2 [18] */
+}
+
+button {
+    width: 100%;
+    padding: 1rem;
+    background: #0d9488;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    min-height: 48px; /* Target Size สำหรับการสัมผัส (Touch) [19, 20] */
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: #0f766e;
+}
+
+.error-msg {
+    background: #fee2e2;
+    color: var(--error-color);
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border-left: 4px solid var(--error-color);
+}
+
+footer {
+    margin-top: 2rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+.dashboard-body {
+    background: #f8fafc; /* พื้นหลังสีสว่างเพื่อให้คอนเทนต์โดดเด่น */
+    display: block; 
+    padding: 20px;
+}
+
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.card:hover { transform: translateY(-5px); }
+
+.stat-value { font-size: 2rem; font-weight: 600; color: var(--teal-dark); margin: 0.5rem 0; }
+.stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+/* Gauge Styles (Heuristic #8: Minimalist Design) [2] */
+.gauge-container { position: relative; width: 120px; margin: 0 auto; }
+.gauge { transform: rotate(-90deg); }
+.gauge-bg { fill: none; stroke: #e5e7eb; stroke-width: 8; }
+.gauge-progress { 
+    fill: none; stroke: var(--teal-dark); stroke-width: 8; 
+    stroke-linecap: round; stroke-dasharray: 283; 
+    transition: stroke-dashoffset 1s ease-out;
+}
+/* คำนวณความคืบหน้า 283 - (283 * percentage / 100) */
+.p-85 { stroke-dashoffset: 42; } 
+.p-42 { stroke-dashoffset: 164; }
+.gauge-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 600; font-size: 1.2rem;
+}
+
+.action-area {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-primary { background: var(--teal-dark); color: white; padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
+.btn-secondary { background: white; color: var(--teal-dark); border: 2px solid var(--teal-dark); padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: 600; }
+
+.logout-btn { color: #dc2626; text-decoration: none; font-size: 0.9rem; }
+/* ════════════════════════════════════════
+   Dashboard Styles
+   ════════════════════════════════════════ */
+
+/* ── Variables เพิ่มเติมสำหรับ Dashboard ── */
+:root {
+    --teal-1: #0d9488;
+    --teal-2: #0f766e;
+    --teal-3: #134e4a;
+    --blue-1: #2563eb;
+    --page-bg: #f0f9f8;
+    --border: rgba(0,0,0,0.08);
+    --shadow: 0 4px 16px rgba(13,148,136,0.08);
+}
+
+/* ── Layout ── */
+body.dashboard-body {
+    background: var(--page-bg);
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    padding: 20px;
+    justify-content: unset;
+    align-items: unset;
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+}
+
+/* ── Header ── */
+.db-header {
+    background: white;
+    border-radius: 16px;
+    border: 0.5px solid var(--border);
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.db-header-left { display: flex; align-items: center; gap: 12px; }
+
+.logo-bar {
+    width: 6px; height: 34px;
+    background: var(--primary-gradient);
+    border-radius: 3px;
+}
+
+.brand-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+.brand-name span { color: var(--teal-1); }
+.brand-sub { font-size: 11px; color: #6b7280; }
+
+.user-pill {
+    display: flex; align-items: center; gap: 10px;
+    background: #f0fdf9;
+    border: 0.5px solid #99f6e4;
+    padding: 7px 16px;
+    border-radius: 99px;
+}
+
+.avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: white;
+}
+
+.user-name { font-size: 14px; font-weight: 600; color: var(--teal-3); }
+.user-role { font-size: 11px; color: var(--teal-1); }
+
+/* ── Grid ── */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 580px) {
+    .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── Stat Cards ── */
+.card {
+    background: white;
+    border-radius: 16px;
+    border: 0.5px solid var(--border);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease;
+}
+
+.card:hover { transform: translateY(-3px); }
+
+.card-title {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+}
+
+.card-value { font-size: 30px; font-weight: 600; color: var(--text-main); line-height: 1; }
+.card-sub { font-size: 12px; color: #6b7280; margin-top: 6px; }
+
+.badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px; border-radius: 99px; margin-top: 10px;
+}
+
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-yellow { background: #fef9c3; color: #854d0e; }
+
+/* ── Gauge Cards ── */
+.gauge-card {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 16px;
+}
+
+.gauge-wrap { position: relative; width: 136px; height: 136px; margin: 10px auto; }
+.gauge-wrap svg { width: 136px; height: 136px; }
+
+.gauge-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.gauge-num { font-size: 24px; font-weight: 600; color: var(--text-main); }
+.gauge-unit { font-size: 11px; color: #6b7280; margin-top: 1px; }
+.gauge-label { font-size: 12px; color: #6b7280; margin-top: 6px; text-align: center; }
+
+@keyframes gaugeAnim {
+    from { stroke-dashoffset: 314; }
+}
+
+/* ── Weather Card ── */
+.weather-card {
+    background: var(--primary-gradient);
+    border-radius: 16px;
+    padding: 22px;
+    color: white;
+    margin-top: 16px;
+    margin-bottom: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-card::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+}
+
+.weather-card::after {
+    content: '';
+    position: absolute; bottom: -24px; right: 60px;
+    width: 90px; height: 90px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+}
+
+.w-location { font-size: 11px; font-weight: 500; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.06em; }
+.w-city { font-size: 18px; font-weight: 600; margin: 4px 0 10px; }
+.w-main { display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+.w-temp { font-size: 48px; font-weight: 600; line-height: 1; }
+.w-cond { font-size: 15px; opacity: 0.9; margin-bottom: 6px; }
+.w-detail { font-size: 12px; opacity: 0.8; line-height: 2; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 12px; margin-top: 16px; }
+
+.btn-primary-dash {
+    flex: 1; padding: 13px 0;
+    background: var(--teal-1); color: white;
+    border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+.btn-primary-dash:hover { background: var(--teal-2); }
+.btn-primary-dash:active { transform: scale(0.97); }
+.btn-primary-dash:disabled { opacity: 0.75; cursor: not-allowed; }
+
+.btn-secondary-dash {
+    flex: 1; padding: 13px 0;
+    background: white; color: var(--teal-1);
+    border: 1.5px solid var(--teal-1);
+    border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+
+.btn-secondary-dash:hover { background: #f0fdf9; }
+.btn-secondary-dash:active { transform: scale(0.97); }
+
+/* ── Toast Notification ── */
+#toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--teal-1); color: white;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none; z-index: 100;
+}
+
+#toast.show { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════
+   Dashboard2 — Smart Farm Layout
+   (Top navbar + Left sidebar + Content)
+   ════════════════════════════════════════ */
+
+body.sf-body {
+    background: #f0f9f8;
+    display: block;
+    height: auto;
+    min-height: 100vh;
+    padding: 0;
+    justify-content: unset;
+    align-items: unset;
+    font-family: 'DM Sans', 'Segoe UI', sans-serif;
+    color: var(--text-main);
+}
+
+/* ── Top Navbar ── */
+.sf-topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: white;
+    border-bottom: 0.5px solid rgba(0,0,0,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(13,148,136,0.07);
+}
+
+.sf-topbar-left { display: flex; align-items: center; gap: 12px; }
+.sf-logo-bar { width: 5px; height: 30px; background: var(--primary-gradient); border-radius: 3px; }
+.sf-brand { font-size: 16px; font-weight: 600; color: var(--text-main); }
+.sf-brand span { color: #0d9488; }
+.sf-brand-sub { font-size: 11px; color: #6b7280; margin-top: 1px; }
+
+.sf-user-pill {
+    display: flex; align-items: center; gap: 9px;
+    background: #f0fdf9;
+    border: 0.5px solid #99f6e4;
+    padding: 6px 14px;
+    border-radius: 99px;
+    cursor: default;
+}
+.sf-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: white;
+}
+.sf-uname { font-size: 13px; font-weight: 600; color: #134e4a; }
+.sf-urole { font-size: 10px; color: #0d9488; }
+
+/* ── Layout shell ── */
+.sf-shell {
+    display: flex;
+    padding-top: 60px;
+    min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sf-sidebar {
+    position: fixed;
+    top: 60px; left: 0; bottom: 0;
+    width: 220px;
+    background: white;
+    border-right: 0.5px solid rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 12px 16px;
+    z-index: 90;
+}
+
+.sf-sidebar-title {
+    font-size: 10px; font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 8px;
+    margin-bottom: 10px;
+}
+
+.sf-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+    margin-bottom: 4px;
+    border: none; background: transparent; width: 100%; text-align: left;
+}
+.sf-nav-item i { font-size: 18px; color: #9ca3af; transition: color 0.15s; }
+.sf-nav-item:hover { background: #f0fdf9; color: #0d9488; }
+.sf-nav-item:hover i { color: #0d9488; }
+.sf-nav-item.active { background: linear-gradient(135deg,#f0fdf9,#eff6ff); color: #0d9488; font-weight: 600; }
+.sf-nav-item.active i { color: #0d9488; }
+.sf-nav-badge {
+    margin-left: auto; font-size: 10px; font-weight: 600;
+    background: #dcfce7; color: #166534;
+    padding: 2px 7px; border-radius: 99px;
+}
+.sf-nav-badge.warn { background: #fef9c3; color: #854d0e; }
+
+.sf-sidebar-spacer { flex: 1; }
+
+.sf-logout-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px; font-weight: 500;
+    color: #dc2626;
+    cursor: pointer;
+    border: 1.5px solid #fecaca;
+    background: #fff5f5;
+    width: 100%; text-align: left;
+    transition: background 0.15s;
+    margin-top: 8px;
+}
+.sf-logout-btn:hover { background: #fee2e2; }
+.sf-logout-btn i { font-size: 18px; }
+
+/* ── Main content ── */
+.sf-main {
+    margin-left: 220px;
+    padding: 24px;
+    flex: 1;
+    min-width: 0;
+}
+
+.sf-page-title { font-size: 18px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+.sf-page-sub { font-size: 12px; color: #6b7280; margin-bottom: 20px; }
+
+/* ── Grid ── */
+.sf-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+@media (max-width: 700px) {
+    .sf-sidebar { display: none; }
+    .sf-main { margin-left: 0; }
+    .sf-grid-2 { grid-template-columns: 1fr; }
+}
+
+/* ── Stat Cards ── */
+.sf-card {
+    background: white;
+    border-radius: 16px;
+    border: 0.5px solid rgba(0,0,0,0.07);
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(13,148,136,0.07);
+    transition: transform 0.2s;
+}
+.sf-card:hover { transform: translateY(-3px); }
+
+.sf-card-title {
+    font-size: 11px; font-weight: 500; color: #6b7280;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+}
+.sf-card-value { font-size: 30px; font-weight: 600; color: var(--text-main); line-height: 1; }
+.sf-card-sub { font-size: 12px; color: #6b7280; margin-top: 6px; }
+.sf-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px; border-radius: 99px; margin-top: 10px;
+}
+.sf-badge-green { background: #dcfce7; color: #166534; }
+.sf-badge-yellow { background: #fef9c3; color: #854d0e; }
+.sf-badge-blue { background: #dbeafe; color: #1e40af; }
+
+/* ── Gauge Cards ── */
+.sf-gauge-card {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 16px;
+}
+.sf-gauge-wrap { position: relative; width: 140px; height: 140px; margin: 8px auto; }
+.sf-gauge-wrap svg { width: 140px; height: 140px; }
+.sf-gauge-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center;
+}
+.sf-gauge-num { font-size: 24px; font-weight: 600; color: var(--text-main); }
+.sf-gauge-unit { font-size: 11px; color: #6b7280; }
+.sf-gauge-label { font-size: 12px; color: #6b7280; margin-top: 6px; text-align: center; }
+
+@keyframes sfGaugeAnim { from { stroke-dashoffset: 339; } }
+
+/* ── Farm Info Card ── */
+.sf-farm-card {
+    background: var(--primary-gradient);
+    border-radius: 16px;
+    padding: 22px 24px;
+    color: white;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+}
+.sf-farm-card::before {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    background: rgba(255,255,255,0.08); border-radius: 50%;
+}
+.sf-farm-card::after {
+    content: ''; position: absolute; bottom: -24px; right: 60px;
+    width: 90px; height: 90px;
+    background: rgba(255,255,255,0.06); border-radius: 50%;
+}
+.sf-farm-label { font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.06em; }
+.sf-farm-title { font-size: 20px; font-weight: 600; margin: 4px 0 12px; }
+.sf-farm-row { display: flex; gap: 24px; flex-wrap: wrap; }
+.sf-farm-stat { }
+.sf-farm-stat-val { font-size: 26px; font-weight: 600; line-height: 1; }
+.sf-farm-stat-lbl { font-size: 11px; opacity: 0.8; margin-top: 3px; }
+.sf-farm-divider { width: 1px; background: rgba(255,255,255,0.25); align-self: stretch; }
+.sf-farm-detail { font-size: 12px; opacity: 0.85; line-height: 2.1; }
+
+/* ── Button Row ── */
+.sf-btn-row { display: flex; gap: 12px; margin-top: 4px; }
+.sf-btn-primary {
+    flex: 1; padding: 13px 0;
+    background: #0d9488; color: white;
+    border: none; border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+.sf-btn-primary:hover { background: #0f766e; }
+.sf-btn-primary:active { transform: scale(0.97); }
+.sf-btn-primary:disabled { opacity: 0.75; cursor: not-allowed; }
+
+.sf-btn-secondary {
+    flex: 1; padding: 13px 0;
+    background: white; color: #0d9488;
+    border: 1.5px solid #0d9488; border-radius: 12px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    font-family: inherit;
+}
+.sf-btn-secondary:hover { background: #f0fdf9; }
+.sf-btn-secondary:active { transform: scale(0.97); }
+
+/* ── Toast ── */
+#sf-toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: #0d9488; color: white;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 14px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none; z-index: 200;
+}
+#sf-toast.show { opacity: 1; transform: translateY(0); }
