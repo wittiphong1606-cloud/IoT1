@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHomeWittip - Blynk Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-body">
+
+    <div class="container">
+        <header class="main-header">
+            <div class="brand">
+                <h1>SmartHome <span>Wittip</span></h1>
+                <p>Virtual Cloud System Control</p>
+            </div>
+            <div class="system-badge" id="cloudStatus">Cloud Syncing...</div>
+        </header>
+
+        <main class="bento-grid">
+            <!-- 3 Switches (V0, V1, V2) [4] -->
+            <section class="card span-2">
+                <h3>Living Room Controls</h3>
+                <div class="control-row">
+                    <div class="switch-item">
+                        <span>Main Light (V0)</span>
+                        <label class="switch"><input type="checkbox" id="v0" onchange="sendUpdate('V0', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                    </div>
+                    <div class="switch-item">
+                        <span>Air Condition (V1)</span>
+                        <label class="switch"><input type="checkbox" id="v1" onchange="sendUpdate('V1', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                    </div>
+                    <div class="switch-item">
+                        <span>Smart TV (V2)</span>
+                        <label class="switch"><input type="checkbox" id="v2" onchange="sendUpdate('V2', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card span-2 chart-card">
+                <h3>Temperature History (V4 Trend)</h3>
+                <div class="chart-container">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </section>
+
+            <!-- LED Status (V3) [5] -->
+            <section class="card">
+                <h3>System LED (V3)</h3>
+                <div id="led-v3" class="led-dot"></div>
+                <p id="led-text" class="status-label">Offline</p>
+            </section>
+
+            <!-- 4 Other Elements (V4 - V7) [6] -->
+            <!-- V4: Temperature Gauge -->
+            <section class="card">
+                <h3>Room Temp (V4)</h3>
+                <div class="gauge-container">
+                    <svg viewBox="0 0 100 100" class="gauge">
+                        <circle class="bg" cx="50" cy="50" r="45"></circle>
+                        <circle id="gauge-v4" class="progress" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div id="temp-val" class="gauge-text">0°C</div>
+                </div>
+            </section>
+
+            <!-- V5: Brightness Slider -->
+            <section class="card">
+                <h3>Dimmer (V5)</h3>
+                <input type="range" id="v5" min="0" max="255" value="0" class="modern-range" oninput="sendUpdate('V5', this.value)">
+                <div class="val-tag">Level: <span id="dim-val">0</span></div>
+            </section>
+
+            <!-- V6: System Feedback (Label) -->
+            <section class="card span-2">
+                <h3>System Message (V6)</h3>
+                <div class="message-display">
+                    <p id="msg-v6">Waiting for Blynk connection...</p>
+                </div>
+            </section>
+
+            <!-- V7: Humidity Progress -->
+            <section class="card">
+                <h3>Humidity (V7)</h3>
+                <div class="humi-box">
+                    <div class="humi-val" id="humi-text">0%</div>
+                    <div class="progress-bar-bg"><div id="humi-bar" class="progress-bar"></div></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="main-footer">
+            <p>© 2026 SmartHomeWittip Project | Powered by Blynk HTTPS API</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
