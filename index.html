@@ -3,95 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartHomeWittip - Blynk Dashboard</title>
+    <meta name="description" content="SmartHomeWittip - Virtual IoT Dashboard ควบคุมบ้านอัจฉริยะผ่าน Blynk Cloud API">
+    <title>SmartHomeWittip - Blynk Dashboard 2026</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="dashboard-body">
 
     <div class="container">
-        <header class="main-header">
+        <!-- Header with Brand & Connection Status -->
+        <header class="main-header" role="banner">
             <div class="brand">
                 <h1>SmartHome <span>Wittip</span></h1>
-                <p>Virtual Cloud System Control</p>
+                <p class="subtitle">Virtual Cloud System Control</p>
             </div>
-            <div class="system-badge" id="cloudStatus">Cloud Syncing...</div>
+            <div class="header-actions">
+                <button id="darkModeBtn" class="dark-mode-btn" onclick="toggleDarkMode()" aria-label="Toggle dark mode" title="เปลี่ยนธีม">🌙</button>
+                <div class="system-badge disconnected" id="cloudStatus">
+                    <span class="status-dot offline" id="statusDot"></span> Connecting...
+                </div>
+            </div>
         </header>
 
-        <main class="bento-grid">
-            <!-- 3 Switches (V0, V1, V2) [4] -->
-            <section class="card span-2">
-                <h3>Living Room Controls</h3>
+        <main class="bento-grid" role="main">
+            <!-- Living Room Controls (V0, V1, V2) -->
+            <section class="card span-2" aria-label="Living Room Controls">
+                <h3>🏠 Living Room Controls</h3>
                 <div class="control-row">
                     <div class="switch-item">
-                        <span>Main Light (V0)</span>
-                        <label class="switch"><input type="checkbox" id="v0" onchange="sendUpdate('V0', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                        <span class="switch-label">Main Light</span>
+                        <span class="pin-tag">V0</span>
+                        <label class="switch">
+                            <input type="checkbox" id="v0" onchange="updateButton('V0', this.checked)">
+                            <span class="slider-toggle"></span>
+                        </label>
                     </div>
                     <div class="switch-item">
-                        <span>Air Condition (V1)</span>
-                        <label class="switch"><input type="checkbox" id="v1" onchange="sendUpdate('V1', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                        <span class="switch-label">Air Condition</span>
+                        <span class="pin-tag">V1</span>
+                        <label class="switch">
+                            <input type="checkbox" id="v1" onchange="updateButton('V1', this.checked)">
+                            <span class="slider-toggle"></span>
+                        </label>
                     </div>
                     <div class="switch-item">
-                        <span>Smart TV (V2)</span>
-                        <label class="switch"><input type="checkbox" id="v2" onchange="sendUpdate('V2', this.checked ? 1 : 0)"><span class="slider"></span></label>
+                        <span class="switch-label">Smart TV</span>
+                        <span class="pin-tag">V2</span>
+                        <label class="switch">
+                            <input type="checkbox" id="v2" onchange="updateButton('V2', this.checked)">
+                            <span class="slider-toggle"></span>
+                        </label>
                     </div>
                 </div>
             </section>
 
-            <section class="card span-2 chart-card">
-                <h3>Temperature History (V4 Trend)</h3>
+            <!-- System LED Status (V3) -->
+            <section class="card" aria-label="System LED Status">
+                <h3>🔴 System LED <span class="pin-tag">V3</span></h3>
+                <div class="led-wrapper">
+                    <div id="led-v3" class="led-dot" role="status" aria-live="polite"></div>
+                    <p id="led-text" class="status-label">ระบบหยุดนิ่ง</p>
+                </div>
+            </section>
+
+            <!-- Temperature Gauge (V4) -->
+            <section class="card" aria-label="Room Temperature">
+                <h3>🌡️ Room Temp <span class="pin-tag">V4</span></h3>
+                <div class="gauge-container">
+                    <svg viewBox="0 0 100 100" class="gauge" aria-hidden="true">
+                        <circle class="bg" cx="50" cy="50" r="45"></circle>
+                        <circle id="gauge-v4" class="progress" cx="50" cy="50" r="45"></circle>
+                    </svg>
+                    <div id="temp-val" class="gauge-text" role="status" aria-live="polite">0.0°C</div>
+                </div>
+            </section>
+
+            <!-- Temperature Chart (V4 Trend) -->
+            <section class="card span-2 chart-card" aria-label="Temperature History">
+                <h3>📈 Temperature History <span class="pin-tag">V4 Trend</span></h3>
                 <div class="chart-container">
                     <canvas id="tempChart"></canvas>
                 </div>
             </section>
 
-            <!-- LED Status (V3) [5] -->
-            <section class="card">
-                <h3>System LED (V3)</h3>
-                <div id="led-v3" class="led-dot"></div>
-                <p id="led-text" class="status-label">Offline</p>
-            </section>
-
-            <!-- 4 Other Elements (V4 - V7) [6] -->
-            <!-- V4: Temperature Gauge -->
-            <section class="card">
-                <h3>Room Temp (V4)</h3>
-                <div class="gauge-container">
-                    <svg viewBox="0 0 100 100" class="gauge">
-                        <circle class="bg" cx="50" cy="50" r="45"></circle>
-                        <circle id="gauge-v4" class="progress" cx="50" cy="50" r="45"></circle>
-                    </svg>
-                    <div id="temp-val" class="gauge-text">0°C</div>
+            <!-- Brightness Dimmer (V5) -->
+            <section class="card" aria-label="Brightness Dimmer">
+                <h3>💡 Dimmer <span class="pin-tag">V5</span></h3>
+                <div class="dimmer-box">
+                    <span id="brightness-icon" class="dimmer-icon" style="opacity: 0.2;">💡</span>
+                    <input type="range" id="v5" min="0" max="255" value="0"
+                           class="modern-range"
+                           oninput="updateSlider(this.value)"
+                           aria-label="Brightness level 0 to 255">
+                    <div class="val-tag">Level: <span id="dim-val">0</span> / 255</div>
                 </div>
             </section>
 
-            <!-- V5: Brightness Slider -->
-            <section class="card">
-                <h3>Dimmer (V5)</h3>
-                <input type="range" id="v5" min="0" max="255" value="0" class="modern-range" oninput="sendUpdate('V5', this.value)">
-                <div class="val-tag">Level: <span id="dim-val">0</span></div>
-            </section>
-
-            <!-- V6: System Feedback (Label) -->
-            <section class="card span-2">
-                <h3>System Message (V6)</h3>
+            <!-- System Message (V6) -->
+            <section class="card span-2" aria-label="System Message">
+                <h3>💬 System Message <span class="pin-tag">V6</span></h3>
                 <div class="message-display">
-                    <p id="msg-v6">Waiting for Blynk connection...</p>
+                    <p id="msg-v6" class="msg-waiting">รอรับข้อมูลจาก Blynk Cloud...</p>
+                </div>
+                <div class="msg-input-row">
+                    <input type="text" id="msg-input" class="msg-input" placeholder="พิมพ์ข้อความ..." aria-label="พิมพ์ข้อความส่งไป Blynk V6" maxlength="200">
+                    <button id="msg-send-btn" class="msg-send-btn" onclick="sendMessage()" aria-label="ส่งข้อความ">ส่ง ➤</button>
                 </div>
             </section>
 
-            <!-- V7: Humidity Progress -->
-            <section class="card">
-                <h3>Humidity (V7)</h3>
+            <!-- Humidity (V7) -->
+            <section class="card" aria-label="Humidity Level">
+                <h3>💧 Humidity <span class="pin-tag">V7</span></h3>
                 <div class="humi-box">
-                    <div class="humi-val" id="humi-text">0%</div>
-                    <div class="progress-bar-bg"><div id="humi-bar" class="progress-bar"></div></div>
+                    <div class="humi-val" id="humi-text" role="status" aria-live="polite">0.0%</div>
+                    <div class="progress-bar-bg">
+                        <div id="humi-bar" class="progress-bar"></div>
+                    </div>
                 </div>
             </section>
         </main>
 
-        <footer class="main-footer">
+        <footer class="main-footer" role="contentinfo">
             <p>© 2026 SmartHomeWittip Project | Powered by Blynk HTTPS API</p>
         </footer>
     </div>
